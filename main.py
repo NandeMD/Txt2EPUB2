@@ -1,6 +1,6 @@
 import os
 from natsort import natsorted
-from utils import txt_to_html_p, generate_temp_folders, remove_temp_folders
+from utils import txt_to_html_p, generate_temp_folders, remove_temp_folders, check_if_exists
 from cprint import cprint
 import jinja2
 import shutil
@@ -13,6 +13,9 @@ txt_folder = input("Enter the txt folder path: ")
 
 # Starting time
 t_start = perf_counter()
+
+# Check if an epub or folder already exists, then delete
+check_if_exists(f"{book_title}.epub")
 
 # Sort the txt names with natural order
 cprint("[INFO]", "yellow", "Sorting txt names.")

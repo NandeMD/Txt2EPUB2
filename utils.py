@@ -1,4 +1,4 @@
-from os import mkdir
+from os import mkdir, path, unlink
 from shutil import rmtree
 
 def txt_to_html_p(txt: str):
@@ -24,3 +24,10 @@ def generate_temp_folders(book_title: str):
 
 def remove_temp_folders(book_title: str):
     rmtree(book_title)
+
+
+def check_if_exists(f_path: str):
+    if path.isfile(f_path):
+        unlink(f_path)
+    elif path.isdir(f_path):
+        rmtree(f_path)
