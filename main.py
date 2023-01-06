@@ -1,6 +1,7 @@
 import os
 from natsort import natsorted
 from utils import txt_to_html_p, generate_temp_folders, remove_temp_folders
+from cprint import cprint
 import jinja2
 import shutil
 
@@ -10,9 +11,11 @@ book_title = input("Book title: ")
 txt_folder = input("Enter the txt folder path: ")
 
 # Sort the txt names with natural order
+cprint("[INFO]", "yellow", "Sorting txt names.")
 txts = natsorted(os.listdir(txt_folder))
 
 # Generate the txt paths for individual reads
+cprint("[INFO]", "yellow", "Generating txt paths.")
 txt_paths = []
 if txt_folder.endswith("/") or txt_folder.endswith("\\"):
     txt_paths = [f"{txt_folder}{txt}" for txt in txts]
@@ -20,9 +23,11 @@ else:
     txt_paths = [f"{txt_folder}/{txt}" for txt in txts]
     
 # For the storing of all the generated files before unzipping
+cprint("[INFO]", "yellow", "Generating temporary folders.")
 generate_temp_folders(book_title)
 
 # Generate the chapter data before writing to xhtml and table of contents 
+cprint("[INFO]", "yellow", "Creating chapter data.")
 chlist = {}
 for index, item in enumerate(txts):
     file = open(txt_paths[index], "r")
@@ -34,6 +39,7 @@ for index, item in enumerate(txts):
     file.close()
 
 # Initialize all the necessary jinja templates
+cprint("[INFO]", "yellow", "Initializing templates.")
 with open("chapter.jinja", "r") as file:
     chapter_t = jinja2.Template(file.read())
 with open("package.jinja", "r") as file:
@@ -47,6 +53,7 @@ pkg_spine = []
 toc_chs = []
 
 # Iterate over all the pregenerated chapter data
+cprint("[INFO]", "yellow", "Writing chapters.")
 for val in chlist.values():
     # Render xhtml from the chapter template
     ch_x = chapter_t.render(
@@ -73,6 +80,7 @@ for val in chlist.values():
     )
 
 # Render the package file
+cprint("[INFO]", "yellow", "Writing package data and table of contents.")
 pkg = package_t.render(
     {
         "title": book_title,
@@ -101,7 +109,9 @@ shutil.copy(
 )
 
 # Generate the archive and rename to epub
+cprint("[INFO]", "yellow", "Creating epub archive.")
 shutil.make_archive(book_title, "zip", book_title)
 os.rename(f"{book_title}.zip", f"{book_title}.epub")
 
 remove_temp_folders(book_title)
+cprint("[FINISH]", "green", "Done!")
