@@ -4,11 +4,15 @@ from utils import txt_to_html_p, generate_temp_folders, remove_temp_folders
 from cprint import cprint
 import jinja2
 import shutil
+from time import perf_counter
 
 
 # Get the book title and txt folder
 book_title = input("Book title: ")
 txt_folder = input("Enter the txt folder path: ")
+
+# Starting time
+t_start = perf_counter()
 
 # Sort the txt names with natural order
 cprint("[INFO]", "yellow", "Sorting txt names.")
@@ -114,4 +118,8 @@ shutil.make_archive(book_title, "zip", book_title)
 os.rename(f"{book_title}.zip", f"{book_title}.epub")
 
 remove_temp_folders(book_title)
-cprint("[FINISH]", "green", "Done!")
+
+# Finish time
+t_finish = perf_counter()
+
+cprint("[DONE]", "green", f"Finished in {round(t_finish-t_start, 2)} seconds!")
