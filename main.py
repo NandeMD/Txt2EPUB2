@@ -1,22 +1,26 @@
 import os
 from natsort import natsorted
-from utils import txt_to_html_p
+from utils import txt_to_html_p, generate_temp_folders, remove_temp_folders
 import jinja2
 import shutil
 
 
+# Get the book title and txt folder
 book_title = input("Book title: ")
 txt_folder = input("Enter the txt folder path: ")
+
+# Sort the txt names with natural order
 txts = natsorted(os.listdir(txt_folder))
-txts = [f"{txt_folder}/{txt}" for txt in txts]
 
-os.mkdir(book_title)
-os.mkdir(f"{book_title}/EPUB")
-os.mkdir(f"{book_title}/META-INF")
-
-with open(f"{book_title}/mimetype", "w") as file:
-    file.write("application/epub+zip")
-
+# Generate the txt paths for individual reads
+txt_paths = []
+if txt_folder.endswith("/") or txt_folder.endswith("\\"):
+    txt_paths = [f"{txt_folder}{txt}" for txt in txts]
+else:
+    txt_paths = [f"{txt_folder}/{txt}" for txt in txts]
+    
+generate_temp_folders(book_title)
+    
 chlist = {}
 
 for index, item in enumerate(txts):
@@ -92,3 +96,5 @@ shutil.copy(
 shutil.make_archive(book_title, "zip", book_title)
 shutil.rmtree(book_title)
 os.rename(f"{book_title}.zip", f"{book_title}.epub")
+
+remove_temp_folders(book_title)
