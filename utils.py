@@ -1,5 +1,6 @@
 from os import mkdir, path, unlink
 from shutil import rmtree
+from cprint import cinput, cprint
 
 def txt_to_html_p(txt: str) -> str:
     splitted = txt.split("\n\n")
@@ -26,8 +27,18 @@ def remove_temp_folders(book_title: str) -> None:
     rmtree(book_title)
 
 
-def check_if_exists(f_path: str) -> int:
+def check_if_exists(f_path: str) -> bool:
     if path.isfile(f_path):
+        check = cinput("[WARN]", "magenta", f"There is already a file named '{f_path}' Do you want to overwrite? (y/n): ")
+        if check.lower() in ["y", "n"]:
+            if check == "n":
+                return True
+        else:
+            cprint("[ERROR]", "red", "Unsupported input char!")
+            return True
+        
         unlink(f_path)
     elif path.isdir(f_path):
         rmtree(f_path)
+        
+    return False
