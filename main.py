@@ -19,19 +19,21 @@ if txt_folder.endswith("/") or txt_folder.endswith("\\"):
 else:
     txt_paths = [f"{txt_folder}/{txt}" for txt in txts]
     
+# For the storing of all the generated files before unzipping
 generate_temp_folders(book_title)
-    
-chlist = {}
 
+# Generate the chapter data before writing to xhtml and table of contents 
+chlist = {}
 for index, item in enumerate(txts):
-    file = open(item, "r")
+    file = open(txt_paths[index], "r")
     chlist[index] = {
         "id": f"id-ch-{index}",
-        "name": item.rsplit(".", 1)[0].replace("../RTW/", ""),
+        "name": item.rsplit(".", 1)[0],
         "content": txt_to_html_p(file.read())
     }
     file.close()
 
+# Initialize all the necessary jinja templates
 with open("chapter.jinja", "r") as file:
     chapter_t = jinja2.Template(file.read())
 with open("package.jinja", "r") as file:
@@ -44,7 +46,9 @@ pkg_chs = []
 pkg_spine = []
 toc_chs = []
 
-for key, val in chlist.items():
+# Iterate over all the pregenerated chapter data
+for val in chlist.values():
+    # Render xhtml from the chapter template
     ch_x = chapter_t.render(
         {
             "title": val["name"],
@@ -53,9 +57,11 @@ for key, val in chlist.items():
         }
     )
 
+    # Write the xhtml to temporary folder
     with open(f"{book_title}/EPUB/{val['name']}.xhtml", "w") as file:
         file.write(ch_x)
 
+    # Generate the necessary package, spine and TOC data
     pkg_chs.append(
         f'<item id="{val["id"]}" href="{val["name"]}.xhtml" media-type="application/xhtml+xml"/>'
     )
@@ -66,6 +72,7 @@ for key, val in chlist.items():
         f'<li><a href="{val["name"]}.xhtml">{val["name"]}</a></li>'
     )
 
+# Render the package file
 pkg = package_t.render(
     {
         "title": book_title,
@@ -74,6 +81,7 @@ pkg = package_t.render(
     }
 )
 
+# Render the table of contents
 toc = toc_t.render(
     {
         "title": book_title,
@@ -92,9 +100,8 @@ shutil.copy(
     f"{book_title}/META-INF/container.xml"
 )
 
-
+# Generate the archive and rename to epub
 shutil.make_archive(book_title, "zip", book_title)
-shutil.rmtree(book_title)
 os.rename(f"{book_title}.zip", f"{book_title}.epub")
 
 remove_temp_folders(book_title)
