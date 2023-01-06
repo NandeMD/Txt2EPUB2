@@ -1,7 +1,7 @@
 from os import mkdir, path, unlink
 from shutil import rmtree
 
-def txt_to_html_p(txt: str):
+def txt_to_html_p(txt: str) -> str:
     splitted = txt.split("\n\n")
     uwu = []
     uwu.append("<p>")
@@ -13,7 +13,7 @@ def txt_to_html_p(txt: str):
     return "".join(uwu)
     
 
-def generate_temp_folders(book_title: str):
+def generate_temp_folders(book_title: str) -> None:
     mkdir(book_title)
     mkdir(f"{book_title}/EPUB")
     mkdir(f"{book_title}/META-INF")
@@ -22,11 +22,11 @@ def generate_temp_folders(book_title: str):
         file.write("application/epub+zip")
 
 
-def remove_temp_folders(book_title: str):
+def remove_temp_folders(book_title: str) -> None:
     rmtree(book_title)
 
 
-def check_if_exists(f_path: str):
+def check_if_exists(f_path: str) -> int:
     if path.isfile(f_path):
         unlink(f_path)
     elif path.isdir(f_path):
