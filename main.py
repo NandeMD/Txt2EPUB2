@@ -1,7 +1,7 @@
 import os
 import sys
 from natsort import natsorted
-from utils import txt_to_html_p, generate_temp_folders, remove_temp_folders, check_if_exists
+from utils import txt_to_html_p, generate_temp_folders, remove_temp_folders, check_if_exists, actual_path
 from cprint import cprint
 import jinja2
 import shutil
@@ -51,11 +51,11 @@ for index, item in enumerate(txts):
 
 # Initialize all the necessary jinja templates
 cprint("[INFO]", "yellow", "Initializing templates.")
-with open("chapter.jinja", "r") as file:
+with open(actual_path("chapter.jinja"), "r") as file:
     chapter_t = jinja2.Template(file.read())
-with open("package.jinja", "r") as file:
+with open(actual_path("package.jinja"), "r") as file:
     package_t = jinja2.Template(file.read())
-with open("toc.jinja", "r") as file:
+with open(actual_path("toc.jinja"), "r") as file:
     toc_t = jinja2.Template(file.read())
 
 
@@ -115,7 +115,7 @@ with open(f"{book_title}/EPUB/toc.xhtml", "w") as file:
     file.write(toc)
 
 shutil.copy(
-    "container.xml",
+    actual_path("container.xml"),
     f"{book_title}/META-INF/container.xml"
 )
 

@@ -1,3 +1,5 @@
+import sys
+
 from os import mkdir, path, unlink
 from shutil import rmtree
 from cprint import cinput, cprint
@@ -42,3 +44,12 @@ def check_if_exists(f_path: str) -> bool:
         rmtree(f_path)
         
     return False
+
+
+def actual_path(file_path: str):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = path.abspath(".")
+
+    return path.join(base_path, file_path)
