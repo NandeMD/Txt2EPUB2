@@ -33,6 +33,12 @@ pyinstaller linux_cli_onefile.spec
 
 ## For the default CLI build:
 pyinstaller linux_cli_dist.spec
+
+## For the onefile GUI build:
+pyinstaller linux_gui_onefile.spec
+
+## For the default GUI build:
+pyinstaller linux_gui_dist.spec
 ```
 
 Note: PyInstaller will create a file named `dist` on the project folder and put the final executable there.
